@@ -226,6 +226,11 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: f6f77e15e2bd5c448a1054d7e488118c, type: 2}
+    - target: {fileID: 5256384803381100468, guid: f2e0b7ae4dae8cf44955bccd3512b213,
+        type: 3}
+      propertyPath: field of view
+      value: 60
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -255,6 +260,7 @@ GameObject:
   - component: {fileID: 248821622}
   - component: {fileID: 248821621}
   - component: {fileID: 248821620}
+  - component: {fileID: 248821624}
   m_Layer: 3
   m_Name: AK-47
   m_TagString: Untagged
@@ -276,14 +282,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 7193419140545709812, guid: 86034c093912bf04e8f736bd7ae5b78e,
     type: 3}
-  ammo: 50
-  maxAmmo: 50
+  ammo: 1000
+  maxAmmo: 1000
+  clipAmmo: 1000
+  clipSize: 1000
   reloadTime: 1
   isReloading: 0
   isAutoFire: 1
+  bulletsPerShot: 1
   shootInterval: 0.075
-  maxSpreadAngle: 2
-  bulletsPerFire: 1
+  maxSpreadAngle: 1
+  onRightClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
+  onReload:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!23 &248821621
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -350,6 +367,23 @@ Transform:
   - {fileID: 1842549078}
   m_Father: {fileID: 1472206180}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &248821624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 248821619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa2fd16d75fbc424793dbd17a70c450c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weapon: {fileID: 248821620}
+  cam: {fileID: 1472206189}
+  isScoped: 0
+  scopeFOVMultiplier: 1.5
+  sensitivityMultiplier: 0.756
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -590,6 +624,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 40
   maxHealth: 100
+  onDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  onDie:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -844,12 +884,23 @@ MonoBehaviour:
     type: 3}
   ammo: 0
   maxAmmo: 5
+  clipAmmo: 0
+  clipSize: 0
   reloadTime: 3
   isReloading: 0
   isAutoFire: 0
+  bulletsPerShot: 0
   shootInterval: 1
   maxSpreadAngle: 5
-  bulletsPerFire: 0
+  onRightClick:
+    m_PersistentCalls:
+      m_Calls: []
+  onShoot:
+    m_PersistentCalls:
+      m_Calls: []
+  onReload:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1348519722
 GameObject:
   m_ObjectHideFlags: 0
@@ -1012,6 +1063,12 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!20 &1472206189 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 5256384803381100468, guid: f2e0b7ae4dae8cf44955bccd3512b213,
+    type: 3}
+  m_PrefabInstance: {fileID: 126319972}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1842549077
 GameObject:
   m_ObjectHideFlags: 0

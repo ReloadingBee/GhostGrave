@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Weapon : MonoBehaviour
 {
@@ -6,21 +7,28 @@ public class Weapon : MonoBehaviour
 
     public int ammo;
     public int maxAmmo = 10;
+    public int clipAmmo;
+    public int clipSize;
+
     public float reloadTime = 3f;
     public bool isReloading;
     public bool isAutoFire;
-    public int bulletsPerFire;
+    public int bulletsPerShot;
 
     public float shootInterval = 0.5f;
     float shootCooldown = 0.5f;
 
     public float maxSpreadAngle = 5f;
 
+    public UnityEvent onRightClick;
+    public UnityEvent onShoot;
+    public UnityEvent onReload;
+
 
     private void Start()
     {
-        if (ammo == 0) ammo = maxAmmo;
-        if (bulletsPerFire == 0) bulletsPerFire = 1;
+        if (clipAmmo == 0) ammo = maxAmmo;
+        if (bulletsPerShot == 0) bulletsPerShot = 1;
     }
 
     private void Update()
@@ -43,41 +51,55 @@ public class Weapon : MonoBehaviour
             Reload();
         }
 
+        if(Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            onRightClick.Invoke();
+        }
+
         shootCooldown -= Time.deltaTime;
     }
 
-    async void Shoot()
+    public void Shoot()
     {
         if (isReloading) return;
         if (shootCooldown > 0) return;
+
+        // Auto Reload
+        if (clipAmmo <= 0)
+        {
+            Reload();
+            return;
+        }
+
+        onShoot.Invoke();
+
         shootCooldown = shootInterval;
 
+        clipAmmo--;
 
-        for (int i = 0; i < bulletsPerFire; i++)
+        for (int i = 0; i < bulletsPerShot; i++)
         {
-            // Bullet Spread
-            Quaternion spreadRotation = Quaternion.Euler(Random.Range(-maxSpreadAngle, maxSpreadAngle),
-                                 Random.Range(-maxSpreadAngle, maxSpreadAngle),
-                                 Random.Range(-maxSpreadAngle, maxSpreadAngle));
-            Instantiate(bulletPrefab, transform.position, transform.rotation * spreadRotation);
-
-            ammo--;
-            // Auto Reload
-            if (ammo <= 0)
-            {
-                Reload();
-                return;
-            }
+            var bullet = Instantiate(bulletPrefab, transform.position, transform.rotation);
+            var offsetX = Random.Range(-maxSpreadAngle, maxSpreadAngle);
+            var offsetY = Random.Range(-maxSpreadAngle, maxSpreadAngle);
+            bullet.transform.eulerAngles += new Vector3(offsetX, offsetY, 0);
         }
     }
 
     async void Reload()
     {
         if (isReloading) return;
-
         isReloading = true;
+
+        onReload.Invoke();
+
         await new WaitForSeconds(reloadTime);
-        ammo = maxAmmo;
+
+        //ammo = maxAmmo;
+        var ammoToReload = Mathf.Min(ammo, clipSize);
+        ammo -= ammoToReload;
+        clipAmmo += ammoToReload;
+
         isReloading = false;
     }
 }
