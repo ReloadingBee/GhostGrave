@@ -282,6 +282,8 @@ MonoBehaviour:
   isReloading: 0
   isAutoFire: 1
   shootInterval: 0.075
+  maxSpreadAngle: 2
+  bulletsPerFire: 1
 --- !u!23 &248821621
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -846,6 +848,8 @@ MonoBehaviour:
   isReloading: 0
   isAutoFire: 0
   shootInterval: 1
+  maxSpreadAngle: 5
+  bulletsPerFire: 0
 --- !u!1 &1348519722
 GameObject:
   m_ObjectHideFlags: 0

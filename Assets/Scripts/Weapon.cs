@@ -9,13 +9,18 @@ public class Weapon : MonoBehaviour
     public float reloadTime = 3f;
     public bool isReloading;
     public bool isAutoFire;
+    public int bulletsPerFire;
 
     public float shootInterval = 0.5f;
     float shootCooldown = 0.5f;
 
+    public float maxSpreadAngle = 5f;
+
+
     private void Start()
     {
         if (ammo == 0) ammo = maxAmmo;
+        if (bulletsPerFire == 0) bulletsPerFire = 1;
     }
 
     private void Update()
@@ -26,11 +31,13 @@ public class Weapon : MonoBehaviour
             Shoot();
         }
 
+        // Auto fire
         if(isAutoFire && Input.GetKey(KeyCode.Mouse0))
         {
             Shoot();
         }
 
+        // Reload
         if (Input.GetKeyDown(KeyCode.R) && ammo < maxAmmo)
         {
             Reload();
@@ -42,17 +49,26 @@ public class Weapon : MonoBehaviour
     async void Shoot()
     {
         if (isReloading) return;
-        if (ammo <= 1)
-        {
-            Reload();
-            return;
-        }
-
         if (shootCooldown > 0) return;
-
         shootCooldown = shootInterval;
-        ammo--;
-        Instantiate(bulletPrefab, transform.position, transform.rotation);
+
+
+        for (int i = 0; i < bulletsPerFire; i++)
+        {
+            // Bullet Spread
+            Quaternion spreadRotation = Quaternion.Euler(Random.Range(-maxSpreadAngle, maxSpreadAngle),
+                                 Random.Range(-maxSpreadAngle, maxSpreadAngle),
+                                 Random.Range(-maxSpreadAngle, maxSpreadAngle));
+            Instantiate(bulletPrefab, transform.position, transform.rotation * spreadRotation);
+
+            ammo--;
+            // Auto Reload
+            if (ammo <= 0)
+            {
+                Reload();
+                return;
+            }
+        }
     }
 
     async void Reload()
