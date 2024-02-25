@@ -3,75 +3,85 @@ using UnityEngine;
 public class ScopeExtreme : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] [Range(1f, 2.5f)] float scopeFOVMultiplier = 1.5f;
+    [Tooltip("Multiplier for the field of view when scoped.")]
+    [SerializeField] [Range(1f, 2.5f)] float FOVMultiplier = 1.5f;
+
+    [Tooltip("Multiplier for the sensitivity when scoped.")]
     [SerializeField] [Range(0.5f, 2f)] public float sensitivityMultiplier = 0.5f;
-    [SerializeField] scopingMode scopeMode = scopingMode.toggle;
+    
+    [Tooltip("Speed of the zoom animation in seconds.")]
+    [SerializeField] [Range(0f, 0.2f)] float animationSpeedSeconds = 0.5f;
+
+    [Space(10)]
+    [Tooltip("The mode of scoping: toggle or hold.")]
+    [SerializeField] ScopingMode scopeMode = ScopingMode.toggle;
 
     [Header("Components")]
     Weapon weapon;
     Camera cam;
 
-    bool isScoped = false;
-
+    [Header("Other")]
+    bool isScoped;
     float normalFOV;
     float normalSensitivity;
     FirstPersonLook look;
+    float zoomValue;
+    float targetZoomValue;
 
-    enum scopingMode
+    enum ScopingMode
     {
         hold,
         toggle
     }
 
-    private void Start()
+    void Start()
     {
         cam = Camera.main;
-        weapon = gameObject.transform.parent.gameObject.GetComponent<Weapon>();
-        if (weapon == null) Debug.LogWarning("Parent object does not have a Weapon component.");
-        else
+        weapon = gameObject.GetComponent<Weapon>();
+        if (weapon != null)
         {
             weapon.onRightClick.AddListener(Scope);
-            normalFOV = cam.fieldOfView;
-            look = cam.GetComponent<FirstPersonLook>();
-            normalSensitivity = look.sensitivity;
+
+            if (cam != null)
+            {
+                normalFOV = cam.fieldOfView;
+                look = cam.GetComponent<FirstPersonLook>();
+                normalSensitivity = look.sensitivity;
+                zoomValue = normalFOV;
+                return;
+            }
+            Debug.LogError("Camera is null");
+            return;
         }
+        Debug.LogWarning("Parent object does not have a Weapon component.");
     }
 
     public void Scope()
     {
-        if(scopeMode == scopingMode.toggle)
+        switch (scopeMode)
         {
-            isScoped = !isScoped;
-        }
-        else
-        {
-            isScoped = true;
+            case ScopingMode.toggle:
+                isScoped = !isScoped;
+                break;
+            case ScopingMode.hold:
+                isScoped = true;
+                break;
         }
 
-        UpdateScope();
+        targetZoomValue = isScoped ? normalFOV / FOVMultiplier : normalFOV;
     }
 
-    void UpdateScope()
+    void Update()
     {
-        if (isScoped)
-        {
-            cam.fieldOfView = normalFOV / scopeFOVMultiplier;
-            look.sensitivity = normalSensitivity * sensitivityMultiplier;
-        }
-        else
-        {
-            cam.fieldOfView = normalFOV;
-            look.sensitivity = normalSensitivity;
-        }
-    }
-
-    private void Update()
-    {
-        if (scopeMode != scopingMode.hold) return;
-        if(Input.GetMouseButtonUp(1))
+        zoomValue = Mathf.Lerp(zoomValue, targetZoomValue, Time.deltaTime / animationSpeedSeconds);
+        cam.fieldOfView = zoomValue;
+        
+        look.sensitivity = isScoped ? normalSensitivity * sensitivityMultiplier : normalSensitivity;
+        
+        if (scopeMode == ScopingMode.hold && !Input.GetMouseButton(1))
         {
             isScoped = false;
-            UpdateScope();
+            targetZoomValue = normalFOV;
         }
     }
 }
