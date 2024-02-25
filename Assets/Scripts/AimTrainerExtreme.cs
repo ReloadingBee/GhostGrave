@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AimTrainer : MonoBehaviour
+public class AimTrainerExtreme : MonoBehaviour
 {
     // I will update this laters
 
