@@ -27,8 +27,11 @@ public class Rocket : MonoBehaviour
         }
 
         // Wall hit effect
-        var obj = Instantiate(hitPrefab, transform.position, Quaternion.identity);
-        obj.transform.forward = other.contacts[0].normal;
+        if (hitPrefab != null)
+        {
+            var obj = Instantiate(hitPrefab, transform.position, Quaternion.identity);
+            obj.transform.forward = other.contacts[0].normal;
+        }
 
         if (bounceCount > 0)
         {

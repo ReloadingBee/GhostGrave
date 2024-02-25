@@ -71,11 +71,8 @@ public class Weapon : MonoBehaviour
             return;
         }
 
-        onShoot.Invoke();
-
-        shootCooldown = shootInterval;
-
         clipAmmo--;
+        shootCooldown = shootInterval;
 
         for (int i = 0; i < bulletsPerShot; i++)
         {
@@ -84,6 +81,8 @@ public class Weapon : MonoBehaviour
             var offsetY = Random.Range(-maxSpreadAngle, maxSpreadAngle);
             bullet.transform.eulerAngles += new Vector3(offsetX, offsetY, 0);
         }
+
+        onShoot.Invoke();
     }
 
     async void Reload()
