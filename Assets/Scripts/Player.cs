@@ -91,9 +91,13 @@ public class Player : MonoBehaviour
             return;
         }
 
+        weapon.onShoot.RemoveListener(UpdateUI);
+        weapon.onReload.RemoveListener(GunReload);
+
         weapon.GetComponent<Rigidbody>().isKinematic = false;
         weapon.transform.parent = null;
         weapon = null;
+
         UpdateUI();
     }
 
