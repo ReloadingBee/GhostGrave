@@ -79,6 +79,7 @@ public class Player : MonoBehaviour
         weapon.transform.parent = hand;
 
         weapon.onShoot.AddListener(UpdateUI);
+        weapon.onReload.AddListener(GunReload);
         UpdateUI();
     }
 
@@ -104,6 +105,12 @@ public class Player : MonoBehaviour
         {
             ammoText.text = "";
         }
+    }
+
+    async void GunReload()
+    {
+        await new WaitForSeconds(weapon.reloadTime + 0.01f);
+        UpdateUI();
     }
 
     private void OnCollisionEnter(Collision other)
