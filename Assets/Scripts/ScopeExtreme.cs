@@ -7,7 +7,7 @@ public class ScopeExtreme : MonoBehaviour
     [SerializeField] [Range(1f, 2.5f)] float FOVMultiplier = 1.5f;
 
     [Tooltip("Multiplier for the sensitivity when scoped.")]
-    [SerializeField] [Range(0.5f, 2f)] public float sensitivityMultiplier = 0.5f;
+    [SerializeField] [Range(0.5f, 2f)] float sensitivityMultiplier = 0.5f;
     
     [Tooltip("Speed of the zoom animation in seconds.")]
     [SerializeField] [Range(0f, 0.2f)] float animationSpeedSeconds = 0.5f;
@@ -48,12 +48,13 @@ public class ScopeExtreme : MonoBehaviour
                 look = cam.GetComponent<FirstPersonLook>();
                 normalSensitivity = look.sensitivity;
                 zoomValue = normalFOV;
+                targetZoomValue = normalFOV;
                 return;
             }
             Debug.LogError("Camera is null");
             return;
         }
-        Debug.LogWarning("Parent object does not have a Weapon component.");
+        Debug.LogError("Parent object does not have a Weapon component.");
     }
 
     public void Scope()
@@ -67,7 +68,6 @@ public class ScopeExtreme : MonoBehaviour
                 isScoped = true;
                 break;
         }
-
         targetZoomValue = isScoped ? normalFOV / FOVMultiplier : normalFOV;
     }
 
