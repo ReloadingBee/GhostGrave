@@ -13,7 +13,7 @@ public class Health : MonoBehaviour
     public UnityEvent onDamage;
     public UnityEvent onDie;
 
-    private void Start()
+    private void Awake()
     {
         if (health == 0) health = maxHealth;
     }
