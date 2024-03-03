@@ -19,6 +19,8 @@ public class Spawner : MonoBehaviour
     public UnityEvent<int> onWaveEnd;
     public UnityEvent onWavesCleared;
 
+    
+
     public void Spawn()
     {
         var point = spawnPoints[Random.Range(0, spawnPoints.Count)];

@@ -16,6 +16,11 @@ public class Player : MonoBehaviour
 
     Camera cam;
 
+    public AudioClip gunEquipSound;
+    public AudioClip gunDropSound;
+    public AudioClip gunReloadSound;
+    public AudioClip gunshotSound;
+
     private void Start()
     {
         cam = Camera.main;
@@ -79,8 +84,11 @@ public class Player : MonoBehaviour
         weapon.transform.parent = hand;
 
         weapon.onShoot.AddListener(UpdateUI);
+        weapon.onShoot.AddListener(ShootSound);
         weapon.onReload.AddListener(GunReload);
         UpdateUI();
+
+        AudioSystem.Play(gunEquipSound);
     }
 
     public void Drop()
@@ -92,6 +100,7 @@ public class Player : MonoBehaviour
         }
 
         weapon.onShoot.RemoveListener(UpdateUI);
+        weapon.onShoot.RemoveListener(ShootSound);
         weapon.onReload.RemoveListener(GunReload);
 
         weapon.GetComponent<Rigidbody>().isKinematic = false;
@@ -99,6 +108,7 @@ public class Player : MonoBehaviour
         weapon = null;
 
         UpdateUI();
+        AudioSystem.Play(gunDropSound);
     }
 
     void UpdateUI()
@@ -113,8 +123,14 @@ public class Player : MonoBehaviour
 
     async void GunReload()
     {
+        AudioSystem.Play(gunReloadSound);
         await new WaitForSeconds(weapon.reloadTime + 0.01f);
         UpdateUI();
+    }
+
+    void ShootSound()
+    {
+        AudioSystem.Play(gunshotSound);
     }
 
     private void OnCollisionEnter(Collision other)
