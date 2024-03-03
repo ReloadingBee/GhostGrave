@@ -612,6 +612,33 @@ MonoBehaviour:
   spawnPoints:
   - {fileID: 863409351}
   - {fileID: 1873635887}
+  enemiesPerWave: 03000000050000000a00000014000000
+  timeBetweenWaves: 5
+  spawnInterval: 2
+  onSpawn:
+    m_PersistentCalls:
+      m_Calls: []
+  onWaveStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 613152117}
+        m_TargetAssemblyTypeName: Weapon, Assembly-CSharp
+        m_MethodName: Shoot
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onWaveEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  onWavesCleared:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &602785282
 GameObject:
   m_ObjectHideFlags: 0
@@ -987,7 +1014,7 @@ Transform:
   m_GameObject: {fileID: 863409350}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.34816036, z: -0, w: 0.93743503}
-  m_LocalPosition: {x: 4.23, y: 1, z: -4.3}
+  m_LocalPosition: {x: 10.58, y: 1, z: 9.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1849,7 +1876,7 @@ Transform:
   m_GameObject: {fileID: 1873635886}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.9342089, z: -0, w: 0.35672647}
-  m_LocalPosition: {x: -3.85, y: 1, z: 4.24}
+  m_LocalPosition: {x: -6.51, y: 1, z: -0.46}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
