@@ -9,13 +9,14 @@ public class Spawner : MonoBehaviour
 
     public List<int> enemiesPerWave;
     int enemiesLeft;
+    int wave;
 
     [Range(0f, 10f)] public float timeBetweenWaves = 5f;
     [Range(0f, 10f)] public float spawnInterval = 2f;
 
     public UnityEvent onSpawn;
-    public UnityEvent onWaveStart;
-    public UnityEvent onWaveEnd;
+    public UnityEvent<int> onWaveStart;
+    public UnityEvent<int> onWaveEnd;
     public UnityEvent onWavesCleared;
 
     public void Spawn()
@@ -30,7 +31,7 @@ public class Spawner : MonoBehaviour
         foreach (var count in enemiesPerWave)
         {
             enemiesLeft = count;
-            onWaveStart.Invoke();
+            onWaveStart.Invoke(wave);
 
             // spawn enemies
             while (enemiesLeft > 0)
@@ -40,7 +41,8 @@ public class Spawner : MonoBehaviour
                 enemiesLeft--;
             }
 
-            onWaveEnd.Invoke();
+            onWaveEnd.Invoke(wave);
+            wave++;
             await new WaitForSeconds(timeBetweenWaves);
         }
 
