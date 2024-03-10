@@ -3,20 +3,23 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    public Transform target;
+    public Player target;
 
-    Health health;
     NavMeshAgent agent;
 
-    private void Start()
+    void Start()
     {
-        health = GetComponent<Health>();
         agent = GetComponent<NavMeshAgent>();
-        if (!target) target = GameObject.FindWithTag("Player").transform;
+        if (!target) target = GameObject.FindWithTag("Player").GetComponent<Player>();
     }
 
     void Update()
     {
-        agent.destination = target.position;
+        if (!target.isAlive)
+        {
+            agent.speed = 0f;
+            return;
+        }
+        agent.destination = target.gameObject.transform.position;
     }
 }
