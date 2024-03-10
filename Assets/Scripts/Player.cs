@@ -174,14 +174,14 @@ public class Player : MonoBehaviour
         ammoText.text = "";
         loseScreen.SetActive(true);
         AudioSystem.Play(gameOverSound, 10f);
-        weapon.gameObject.SetActive(false);
-        weapon = null;
         spawner.onWavesCleared.RemoveListener(AllWavesCleared);
         spawner.enemiesPerWave.Clear();
         spawner.enemiesLeft = 0;
         spawner.gameObject.SetActive(false);
         ammoText.gameObject.SetActive(false);
         healthText.gameObject.SetActive(false);
+        weapon.gameObject.SetActive(false);
+        weapon = null;
     }
 
     public void WIN()
@@ -192,10 +192,10 @@ public class Player : MonoBehaviour
         ammoText.text = "";
         winScreen.SetActive(true);
         AudioSystem.Play(gameOverSound, 10f);
-        weapon.gameObject.SetActive(false);
-        weapon = null;
         spawner.gameObject.SetActive(false);
         ammoText.gameObject.SetActive(false);
         healthText.gameObject.SetActive(false);
+        weapon.gameObject.SetActive(false);
+        weapon = null;
     }
 }
