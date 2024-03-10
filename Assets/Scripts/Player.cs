@@ -7,9 +7,13 @@ public class Player : MonoBehaviour
     [SerializeField] TMP_Text healthText;
     [SerializeField] TMP_Text ammoText;
     [SerializeField] GameObject pickUpText;
+    [SerializeField] GameObject winScreen;
+    [SerializeField] GameObject loseScreen;
+    [SerializeField] AudioClip gameOverSound;
 
     [Header("Components")]
     public Health health;
+    public float trueHealth;
     public Weapon weapon;
     public LayerMask weaponLayer;
     public Transform hand;
@@ -21,17 +25,28 @@ public class Player : MonoBehaviour
     public AudioClip gunReloadSound;
     public AudioClip gunshotSound;
 
-    private void Start()
+    public Spawner spawner;
+
+    public bool isAlive = true;
+
+    void Start()
     {
+        loseScreen.SetActive(false);
+        winScreen.SetActive(false);
         cam = Camera.main;
+
+        trueHealth = health.health;
 
         health.onDamage.AddListener(UpdateUI);
         health.onDie.AddListener(Respawn);
         UpdateUI();
+        
+        spawner.onWavesCleared.AddListener(AllWavesCleared);
     }
 
     void Update()
     {
+        if (!isAlive) return;
         var collided = Physics.Raycast(cam.transform.position, cam.transform.forward, out var hit, 2f, weaponLayer);
         pickUpText.SetActive(!weapon && collided);
 
@@ -95,7 +110,6 @@ public class Player : MonoBehaviour
     {
         if (!weapon)
         {
-            print("No Weapon to drop!!!");
             return;
         }
 
@@ -114,11 +128,7 @@ public class Player : MonoBehaviour
     void UpdateUI()
     {
         healthText.text = $"HP: {health.health}";
-        if(weapon) ammoText.text = $"{weapon.clipAmmo}/{weapon.ammo}";
-        else
-        {
-            ammoText.text = "";
-        }
+        ammoText.text = weapon ? $"{weapon.clipAmmo}/{weapon.ammo}" : "";
     }
 
     async void GunReload()
@@ -133,18 +143,59 @@ public class Player : MonoBehaviour
         AudioSystem.Play(gunshotSound);
     }
 
-    private void OnCollisionEnter(Collision other)
+    void OnCollisionStay(Collision other)
     {
-        if(other.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy"))
         {
-            health.Damage(10);
+            trueHealth -= 10 * Time.deltaTime;
+            health.health = Mathf.CeilToInt(trueHealth);
+            health.Damage(0);
         }
     }
 
     void Respawn()
     {
-        health.health = health.maxHealth;
-        transform.position = Vector3.zero;
-        UpdateUI();
+        if (!isAlive) return;
+        LOSE();
+    }
+    
+    async void AllWavesCleared()
+    {
+        spawner.onWavesCleared.RemoveListener(AllWavesCleared);
+        await new WaitUntil (() => GameObject.FindGameObjectsWithTag("Enemy").Length == 0);
+        WIN();
+    }
+
+    public void LOSE()
+    {
+        isAlive = false;
+        healthText.text = "";
+        pickUpText.SetActive(false);
+        ammoText.text = "";
+        loseScreen.SetActive(true);
+        AudioSystem.Play(gameOverSound, 10f);
+        weapon.gameObject.SetActive(false);
+        weapon = null;
+        spawner.onWavesCleared.RemoveListener(AllWavesCleared);
+        spawner.enemiesPerWave.Clear();
+        spawner.enemiesLeft = 0;
+        spawner.gameObject.SetActive(false);
+        ammoText.gameObject.SetActive(false);
+        healthText.gameObject.SetActive(false);
+    }
+
+    public void WIN()
+    {
+        isAlive = false;
+        healthText.text = "";
+        pickUpText.SetActive(false);
+        ammoText.text = "";
+        winScreen.SetActive(true);
+        AudioSystem.Play(gameOverSound, 10f);
+        weapon.gameObject.SetActive(false);
+        weapon = null;
+        spawner.gameObject.SetActive(false);
+        ammoText.gameObject.SetActive(false);
+        healthText.gameObject.SetActive(false);
     }
 }

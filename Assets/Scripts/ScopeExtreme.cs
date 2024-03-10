@@ -54,10 +54,9 @@ public class ScopeExtreme : MonoBehaviour
             Debug.LogError("Camera is null");
             return;
         }
-        Debug.LogError("Parent object does not have a Weapon component.");
+        Debug.LogError("Object does not have a Weapon component.");
     }
-
-    public void Scope()
+    void Scope()
     {
         switch (scopeMode)
         {

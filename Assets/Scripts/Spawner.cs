@@ -8,8 +8,8 @@ public class Spawner : MonoBehaviour
     public List<Transform> spawnPoints;
 
     public List<int> enemiesPerWave;
-    int enemiesLeft;
-    int wave;
+    public int enemiesLeft;
+    [SerializeField] int wave;
 
     [Range(0f, 10f)] public float timeBetweenWaves = 5f;
     [Range(0f, 10f)] public float spawnInterval = 2f;
@@ -32,6 +32,7 @@ public class Spawner : MonoBehaviour
     {
         foreach (var count in enemiesPerWave)
         {
+            if (count <= 0) return;
             enemiesLeft = count;
             onWaveStart.Invoke(wave);
 

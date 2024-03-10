@@ -13,7 +13,7 @@ public class Health : MonoBehaviour
     public UnityEvent onDamage;
     public UnityEvent onDie;
 
-    private void Awake()
+    void Awake()
     {
         if (health == 0) health = maxHealth;
     }
@@ -35,7 +35,10 @@ public class Health : MonoBehaviour
     public void Die()
     {
         onDie.Invoke();
-        if (shouldDestroy) Destroy(gameObject);
+        if (shouldDestroy)
+        {
+            Destroy(gameObject);
+        }
         if (deathEffect != null) Instantiate(deathEffect, transform.position, Quaternion.identity);
     }
 }

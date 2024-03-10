@@ -7,18 +7,22 @@ public class Rocket : MonoBehaviour
     public GameObject explosionPrefab;
     public GameObject hitPrefab;
     public int bounceCount;
+    public Vector3 rotationOffset;
+    Vector3 forward;
 
-    private void Start()
+    void Start()
     {
+        forward = transform.forward;
+        transform.rotation *= Quaternion.Euler(rotationOffset);
         Destroy(gameObject, 3f);
     }
 
-    private void Update()
+    void Update()
     {
-        transform.position += transform.forward * speed * Time.deltaTime;
+        transform.position += forward * (speed * Time.deltaTime);
     }
 
-    private void OnCollisionEnter(Collision other)
+    void OnCollisionEnter(Collision other)
     {
         var health = other.gameObject.GetComponent<Health>();
         if(health != null)
@@ -35,7 +39,7 @@ public class Rocket : MonoBehaviour
 
         if (bounceCount > 0)
         {
-            transform.forward = other.contacts[0].normal;
+            forward = other.contacts[0].normal;
             bounceCount--;
         }
         else
